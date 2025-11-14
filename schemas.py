@@ -11,8 +11,8 @@ Model name is converted to lowercase for the collection name:
 - BlogPost -> "blogs" collection
 """
 
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field, HttpUrl
+from typing import Optional, List
 
 # Example schemas (replace with your own):
 
@@ -38,11 +38,20 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
+# Sindhudurg Tourism schemas
 
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+class Attraction(BaseModel):
+    """
+    Attractions in Sindhudurg: beaches, forts, temples, waterfalls, activities.
+    Collection name: "attraction"
+    """
+    name: str = Field(..., description="Attraction name")
+    description: str = Field(..., description="Short description")
+    category: str = Field(..., description="Category, e.g., Beach, Fort, Temple, Activity")
+    location: str = Field(..., description="Town/Village e.g., Malvan, Tarkarli, Vengurla")
+    image_url: Optional[HttpUrl] = Field(None, description="Representative image URL")
+    rating: Optional[float] = Field(None, ge=0, le=5, description="Average rating out of 5")
+    tags: List[str] = Field(default_factory=list, description="Searchable tags")
+    latitude: Optional[float] = Field(None, description="Latitude")
+    longitude: Optional[float] = Field(None, description="Longitude")
+    ticket_price: Optional[float] = Field(None, ge=0, description="Approx ticket/entry price if any")
